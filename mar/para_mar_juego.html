@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Mar ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Georgia, serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffd6e0 0%, #ffb6c1 40%, #ffcce7 100%);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondo de corazones flotantes */
+        .corazones-fondo {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Contenedor principal */
+        .contenedor {
+            position: relative;
+            z-index: 2;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        /* Tarjeta de mensaje */
+        .tarjeta {
+            background: rgba(255, 255, 255, 0.94);
+            padding: 35px 30px;
+            border-radius: 25px;
+            box-shadow: 0 12px 35px rgba(214, 51, 108, 0.25);
+            margin-bottom: 30px;
+            animation: aparecer 1.5s ease-out forwards;
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #d6336c;
+            font-size: 2.4rem;
+            margin-bottom: 15px;
+            animation: latido 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes latido {
+            from { transform: scale(1); }
+            to { transform: scale(1.07); }
+        }
+
+        p {
+            color: #552b46;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        /* Estilos del juego */
+        .zona-juego {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(214, 51, 108, 0.2);
+            min-height: 350px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .puntuacion {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #c2255c;
+            margin-bottom: 20px;
+        }
+
+        .instruccion {
+            font-style: italic;
+            color: #883b68;
+            margin-bottom: 25px;
+        }
+
+        /* Corazones del juego */
+        .corazon-juego {
+            position: absolute;
+            font-size: 2.2rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            user-select: none;
+            z-index: 3;
+        }
+
+        .corazon-juego:hover {
+            transform: scale(1.2);
+        }
+
+        /* Mensaje final */
+        .mensaje-final {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff0f5;
+            border-radius: 15px;
+            color: #d6336c;
+            font-weight: bold;
+            font-size: 1.2rem;
+            animation: resaltar 0.8s ease-out;
+        }
+
+        @keyframes resaltar {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="corazones-fondo" id="fondo"></div>
+
+    <div class="contenedor">
+        <div class="tarjeta">
+            <h1>Para ti, Mar ❤️</h1>
+            <p>
+                Mar, tu nombre es como el mar: inmenso, profundo y lleno de luz. Gracias por ser mi calma, mi alegría
+                y la persona que hace que todo sea más bonito.
+            </p>
+            <p>
+                haz clic en los corazones que aparezcan. ¡Cada uno representa un poquito
+                de todo el cariño que te tengo!
+            </p>
+        </div>
+
+        <div class="zona-juego" id="juego">
+            <div class="puntuacion">Puntos: <span id="contador">0</span></div>
+            <div class="instruccion">¡Haz clic sobre los corazones! ❤️</div>
+            <div class="mensaje-final" id="final">
+                ¡Lo lograste! ❤️<br>
+                Así de grande es mi amor por ti: no tiene fin, y cada día crece más.<br>
+                Te quiero muchísimo, Mar.❤️
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Corazones flotantes del fondo ---
+        const fondo = document.getElementById('fondo');
+        function crearCorazonFondo() {
+            const corazon = document.createElement('div');
+            corazon.innerHTML = '❤️';
+            corazon.style.position = 'absolute';
+            corazon.style.left = Math.random() * 100 + '%';
+            corazon.style.fontSize = `${Math.random() * 20 + 10}px`;
+            corazon.style.opacity = `${Math.random() * 0.4 + 0.2}`;
+            const duracion = Math.random() * 5 + 6;
+            corazon.style.animation = `flotar ${duracion}s linear forwards`;
+            fondo.appendChild(corazon);
+            setTimeout(() => corazon.remove(), duracion * 1000);
+        }
+        setInterval(crearCorazonFondo, 350);
+
+        const animacionFondo = document.createElement('style');
+        animacionFondo.textContent = `
+            @keyframes flotar {
+                from { transform: translateY(100vh) rotate(0); opacity: 0; }
+                20% { opacity: 0.6; }
+                to { transform: translateY(-10vh) rotate(${Math.random() * 180}deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(animacionFondo);
+
+        // --- Mini juego ---
+        let puntos = 0;
+        const meta = 15; // Al llegar a 15 puntos aparece el mensaje
+        const contador = document.getElementById('contador');
+        const zonaJuego = document.getElementById('juego');
+        const mensajeFinal = document.getElementById('final');
+
+        function crearCorazonJuego() {
+            if (puntos >= meta) return;
+
+            const corazon = document.createElement('div');
+            corazon.className = 'corazon-juego';
+            corazon.innerHTML = '❤️';
+            corazon.style.left = `${Math.random() * 85 + 5}%`;
+            corazon.style.top = `${Math.random() * 75 + 5}%`;
+
+            // Al hacer clic suma puntos
+            corazon.addEventListener('click', () => {
+                puntos++;
+                contador.textContent = puntos;
+                corazon.style.transform = 'scale(1.5)';
+                corazon.style.opacity = '0';
+                setTimeout(() => corazon.remove(), 200);
+
+                // Al llegar a la meta
+                if (puntos >= meta) {
+                    mensajeFinal.style.display = 'block';
+                }
+            });
+
+            zonaJuego.appendChild(corazon);
+            setTimeout(() => corazon.remove(), 2500);
+        }
+
+        // Crear corazones cada 1.2 segundos
+        setInterval(crearCorazonJuego, 1200);
+    </script>
+</body>
+</html>
